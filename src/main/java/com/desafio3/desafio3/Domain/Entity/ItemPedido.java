@@ -12,12 +12,15 @@ import lombok.NoArgsConstructor;
 public class ItemPedido {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne
+    @JoinColumn(name = "pedido.id")
     private Pedido pedido;
-    @OneToOne
+
+    @ManyToOne
+    @JoinColumn(name = "produto.id")
     private Produto produto;
 
     private Integer quantidade;

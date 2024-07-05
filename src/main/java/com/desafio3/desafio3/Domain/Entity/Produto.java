@@ -14,8 +14,9 @@ import java.math.BigDecimal;
 public class Produto {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    private String nome;
     private String descricao;
     private BigDecimal preco;
 
@@ -24,4 +25,9 @@ public class Produto {
 
     @ManyToOne
     private Estoque estoque;
+
+    public Produto(Integer id, String nome) {
+        this.id = id;
+        this.nome = nome;
+    }
 }

@@ -16,10 +16,13 @@ import java.util.List;
 public class Pedido {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private LocalDate data;
     private BigDecimal total;
+
+    @ManyToOne
+    private Usuario usuario;
 
     @OneToMany
     private List<ItemPedido> itemPedido;
