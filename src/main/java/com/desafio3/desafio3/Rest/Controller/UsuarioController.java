@@ -2,6 +2,7 @@ package com.desafio3.desafio3.Rest.Controller;
 
 import com.desafio3.desafio3.Domain.Entity.Usuario;
 import com.desafio3.desafio3.Domain.Repository.UsuarioRepository;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,7 @@ public class UsuarioController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Usuario createProduto(@RequestBody Usuario usuario) {
+    public Usuario createProduto(@RequestBody @Valid Usuario usuario) {
         return repository.save(usuario);
     }
 }
