@@ -8,6 +8,7 @@ import com.desafio3.desafio3.Rest.Dto.InfosItemPedidoDto;
 import com.desafio3.desafio3.Rest.Dto.InfosPedidoDto;
 import com.desafio3.desafio3.Rest.Dto.PedidoDto;
 import com.desafio3.desafio3.Service.PedidoService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class PedidoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Integer createPedido(@RequestBody PedidoDto dto){
+    public Integer createPedido(@RequestBody @Valid PedidoDto dto){
         Pedido pedido = service.salvar(dto);
         return pedido.getId();
     }

@@ -23,7 +23,7 @@ public class Usuario {
     private String nome;
 
     @NotEmpty(message = "O campo cpf é obrigatório.")
-    @CPF(message = "Informe um cpf válido.")
+    @CPF(message = "Informe um cpf válido sem pontuação.")
     private String cpf;
 
     @OneToMany(mappedBy = "usuario")

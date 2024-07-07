@@ -2,6 +2,7 @@ package com.desafio3.desafio3.Rest.Controller;
 
 import com.desafio3.desafio3.Domain.Entity.Produto;
 import com.desafio3.desafio3.Domain.Repository.ProdutoRepository;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpStatus;
@@ -27,7 +28,7 @@ public class ProdutoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Produto createProduto(@RequestBody Produto produto) {
+    public Produto createProduto(@RequestBody @Valid Produto produto) {
         return repository.save(produto);
     }
 
@@ -46,7 +47,7 @@ public class ProdutoController {
 
     @PutMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateProduto(@PathVariable Integer id, @RequestBody Produto produto){
+    public void updateProduto(@PathVariable Integer id, @RequestBody @Valid Produto produto){
          repository.findById(id).
                  map(produtoExistente -> {
                      produto.setId(produtoExistente.getId());
