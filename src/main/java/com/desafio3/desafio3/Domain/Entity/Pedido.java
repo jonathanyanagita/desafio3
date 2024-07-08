@@ -23,9 +23,10 @@ public class Pedido {
     private BigDecimal total;
 
     @ManyToOne
+    @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
-    @OneToMany
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemPedido> itens;
 
     @Enumerated(EnumType.STRING)

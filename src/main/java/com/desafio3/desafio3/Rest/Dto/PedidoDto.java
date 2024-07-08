@@ -17,7 +17,6 @@ public class PedidoDto {
     @NotNull(message = "É obrigatório informar id do usuario.")
     private Integer usuario;
 
-    @NotNull(message = "É obrigatório informar total do pedido.")
     private BigDecimal total;
 
     @NotEmptyList(message = "O pedido deve conter pelo menos um item.")

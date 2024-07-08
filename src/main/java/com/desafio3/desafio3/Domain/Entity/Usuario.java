@@ -26,6 +26,6 @@ public class Usuario {
     @CPF(message = "Informe um cpf válido sem pontuação.")
     private String cpf;
 
-    @OneToMany(mappedBy = "usuario")
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Pedido> pedidos;
 }
