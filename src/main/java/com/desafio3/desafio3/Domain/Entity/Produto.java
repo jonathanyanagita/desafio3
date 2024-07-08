@@ -26,9 +26,7 @@ public class Produto {
     @NotNull(message = "É obrigatório inserir preço do produto.")
     private BigDecimal preco;
 
-
-    /*@ManyToOne
-    private Estoque estoque;*/
+    private Integer quantidadeEstoque;
 
     public Produto(Integer id, String nome) {
         this.id = id;
