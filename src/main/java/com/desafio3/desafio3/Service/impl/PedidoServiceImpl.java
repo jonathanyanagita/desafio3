@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PatchMapping;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -43,11 +44,20 @@ public class PedidoServiceImpl implements PedidoService {
 
         Pedido pedido = new Pedido();
         pedido.setData(LocalDateTime.now());
-        pedido.setTotal(dto.getTotal());
+
+        BigDecimal totalPedido = BigDecimal.ZERO;
+
+        List<ItemPedido> itemsPedido = converterItems(pedido, dto.getItems());
+
+        for (ItemPedido item : itemsPedido) {
+            BigDecimal subtotalItem = item.getProduto().getPreco().multiply(BigDecimal.valueOf(item.getQuantidade()));
+            totalPedido = totalPedido.add(subtotalItem);
+        }
+
+        pedido.setTotal(totalPedido);
         pedido.setUsuario(usuario);
         pedido.setStatus(PedidoStatus.REALIZADO);
 
-        List<ItemPedido> itemsPedido = converterItems(pedido, dto.getItems());
         repository.save(pedido);
         itemPedidoRepository.saveAll(itemsPedido);
         pedido.setItens(itemsPedido);
