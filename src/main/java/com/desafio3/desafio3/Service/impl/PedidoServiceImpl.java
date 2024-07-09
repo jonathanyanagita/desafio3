@@ -83,13 +83,15 @@ public class PedidoServiceImpl implements PedidoService {
             throw new RegraDeNegocioException("Não é possivel realizar um pedido sem items!");
         }
 
-        return items
-                .stream()
-                .map( dto -> {
+        return items.stream().map( dto -> {
             Integer idProduto = dto.getProduto();
             Produto produto = produtoRepository
                     .findById(idProduto)
                     .orElseThrow(()-> new RegraDeNegocioException("Código de produto inválido: " + idProduto));
+
+            if (dto.getQuantidade() > produto.getEstoque()) {
+                throw new RegraDeNegocioException("Quantidade solicitada para o produto " + idProduto + " é maior do que a quantidade disponível em estoque.");
+            }
 
             ItemPedido itempedido = new ItemPedido();
             itempedido.setQuantidade(dto.getQuantidade());

@@ -26,7 +26,7 @@ public class Produto {
     @NotNull(message = "É obrigatório inserir preço do produto.")
     private BigDecimal preco;
 
-    private Integer quantidadeEstoque;
+    private Integer estoque;
 
     public Produto(Integer id, String nome) {
         this.id = id;
