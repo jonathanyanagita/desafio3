@@ -10,6 +10,7 @@ import com.desafio3.desafio3.Rest.Dto.InfosPedidoDto;
 import com.desafio3.desafio3.Rest.Dto.PedidoDto;
 import com.desafio3.desafio3.Service.PedidoService;
 import jakarta.validation.Valid;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -35,6 +36,7 @@ public class PedidoController {
         this.service = service;
     }
 
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Integer createPedido(@RequestBody @Valid PedidoDto dto){
@@ -59,15 +61,13 @@ public class PedidoController {
 
     private InfosPedidoDto converter(Pedido pedido){
         return InfosPedidoDto
-                .builder()
-                .id(pedido.getId())
+                .builder().id(pedido.getId())
                 .nomeUsuario(pedido.getUsuario().getNome())
                 .cpf(pedido.getUsuario().getCpf())
                 .dataPedido(pedido.getData())
                 .total(pedido.getTotal())
                 .status(pedido.getStatus().name())
-                .items(converter(pedido.getItens()))
-                .build();
+                .items(converter(pedido.getItens())).build();
     }
 
     private List<InfosItemPedidoDto> converter(List<ItemPedido> items){
@@ -77,15 +77,14 @@ public class PedidoController {
         }
 
         return items.stream().map(
-                item -> InfosItemPedidoDto
-                        .builder()
+                item -> InfosItemPedidoDto.builder()
                         .nomeProduto(item.getProduto().getNome())
                         .precoUnitario(item.getProduto().getPreco())
-                        .quantidade(item.getQuantidade())
-                        .build()
+                        .quantidade(item.getQuantidade()).build()
         ).collect(Collectors.toList());
     }
 
+    @Cacheable("cache-filtro-data")
     @GetMapping("/data/{data}")
     public List<InfosPedidoDto> getById(@PathVariable("data") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime data){
         return service.obterPedidoCompletoData(data)

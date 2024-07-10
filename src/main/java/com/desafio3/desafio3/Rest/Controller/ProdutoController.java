@@ -3,6 +3,7 @@ package com.desafio3.desafio3.Rest.Controller;
 import com.desafio3.desafio3.Domain.Entity.Produto;
 import com.desafio3.desafio3.Domain.Repository.ProdutoRepository;
 import jakarta.validation.Valid;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpStatus;
@@ -56,6 +57,7 @@ public class ProdutoController {
                  }).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Produto não encontrado!"));
     }
 
+    @Cacheable("cache-busca-produto")
     @GetMapping
     public List<Produto> find(Produto filtro){
         ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreCase().withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
