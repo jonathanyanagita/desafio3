@@ -19,7 +19,7 @@ public interface PedidoService {
 
     Optional<Pedido> obterPedidoCompleto(Integer id);
 
-    Optional<Pedido> obterPedidoCompletoData(LocalDateTime data);
+    List<Pedido> obterPedidoCompletoData(LocalDateTime data);
 
     void atualizaStatus(Integer id, PedidoStatus status);
 

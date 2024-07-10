@@ -88,8 +88,7 @@ public class PedidoController {
 
     @GetMapping("/data/{data}")
     public List<InfosPedidoDto> getById(@PathVariable("data") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime data){
-        return service
-                .obterPedidoCompletoData(data)
-                .map(pedido -> converter(pedido)).stream().toList();
+        return service.obterPedidoCompletoData(data)
+                .stream().map(pedido -> converter(pedido)).toList();
     }
 }

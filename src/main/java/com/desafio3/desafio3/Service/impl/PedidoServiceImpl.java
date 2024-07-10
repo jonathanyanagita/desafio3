@@ -70,7 +70,7 @@ public class PedidoServiceImpl implements PedidoService {
     }
 
     @Override
-    public Optional<Pedido> obterPedidoCompletoData(LocalDateTime data) {
+    public List<Pedido> obterPedidoCompletoData(LocalDateTime data) {
         return repository.findByDataFetchItems(data);
     }
 
