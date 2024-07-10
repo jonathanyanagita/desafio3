@@ -70,6 +70,11 @@ public class PedidoServiceImpl implements PedidoService {
     }
 
     @Override
+    public Optional<Pedido> obterPedidoCompletoData(LocalDateTime data) {
+        return repository.findByDataFetchItems(data);
+    }
+
+    @Override
     @Transactional
     public void atualizaStatus(Integer id, PedidoStatus status) {
         repository.findById(id).map( pedido -> {
@@ -77,6 +82,7 @@ public class PedidoServiceImpl implements PedidoService {
             return repository.save(pedido);
         }).orElseThrow(()->new PedidoNaoEncontradoException());
     }
+
 
     public List<ItemPedido> converterItems(Pedido pedido, List<ItemPedidoDto> items){
         if (items.isEmpty()){
