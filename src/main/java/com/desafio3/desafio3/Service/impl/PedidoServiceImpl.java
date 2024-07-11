@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PatchMapping;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -70,7 +71,7 @@ public class PedidoServiceImpl implements PedidoService {
     }
 
     @Override
-    public List<Pedido> obterPedidoCompletoData(LocalDateTime data) {
+    public List<Pedido> obterPedidoCompletoData(LocalDate data) {
         return repository.findByDataFetchItems(data);
     }
 

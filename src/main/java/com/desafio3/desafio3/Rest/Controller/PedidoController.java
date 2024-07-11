@@ -20,6 +20,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -86,7 +87,7 @@ public class PedidoController {
 
     @Cacheable("cache-filtro-data")
     @GetMapping("/data/{data}")
-    public List<InfosPedidoDto> getById(@PathVariable("data") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime data){
+    public List<InfosPedidoDto> getById(@PathVariable("data") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data){
         return service.obterPedidoCompletoData(data)
                 .stream().map(pedido -> converter(pedido)).toList();
     }

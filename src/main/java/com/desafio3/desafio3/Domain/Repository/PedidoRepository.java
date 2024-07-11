@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -19,8 +20,9 @@ public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
     @Query("select p from Pedido p left join fetch p.itens where p.id = :id")
     Optional<Pedido> findByIdFetchItems(@Param("id") Integer id);
 
-    @Query("select p from Pedido p left join fetch p.itens where p.data IN :datas")
-    List<Pedido> findByDataFetchItems(@Param("datas") LocalDateTime datas);
+    @Query("select p from Pedido p left join fetch p.itens where FUNCTION('DATE_FORMAT', p.data, '%Y-%m-%d') IN :datas")
+    List<Pedido> findByDataFetchItems(@Param("datas") LocalDate datas);
+
 
 
 }
