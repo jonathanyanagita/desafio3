@@ -23,6 +23,6 @@ public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
     @Query("select p from Pedido p left join fetch p.itens where FUNCTION('DATE_FORMAT', p.data, '%Y-%m-%d') IN :datas")
     List<Pedido> findByDataFetchItems(@Param("datas") LocalDate datas);
 
-
-
+    @Query("SELECT p FROM Pedido p WHERE MONTH(p.data) = :month AND YEAR(p.data) = :year")
+    List<Pedido> findByMesFetchItems(@Param("month") int month, @Param("year") int year);
 }

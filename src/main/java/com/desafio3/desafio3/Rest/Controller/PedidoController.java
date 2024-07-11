@@ -87,9 +87,17 @@ public class PedidoController {
 
     @Cacheable("cache-filtro-data")
     @GetMapping("/data/{data}")
-    public List<InfosPedidoDto> getById(@PathVariable("data") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data){
+    public List<InfosPedidoDto> getByDate(@PathVariable("data") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data){
         return service.obterPedidoCompletoData(data)
                 .stream().map(pedido -> converter(pedido)).toList();
     }
 
+    @GetMapping("/relatorio/vendas/{mes}")
+    public ResponseEntity<List<InfosPedidoDto>> getVendasPorMes(@PathVariable String mes) {
+        List<Pedido> pedidos = service.findPedidosByMes(mes);
+        List<InfosPedidoDto> pedidosDto = pedidos.stream()
+                .map(this::converter)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(pedidosDto);
+    }
 }

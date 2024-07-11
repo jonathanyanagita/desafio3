@@ -21,6 +21,8 @@ public interface PedidoService {
 
     List<Pedido> obterPedidoCompletoData(LocalDate data);
 
+    List<Pedido> findPedidosByMes(String mes);
+
     void atualizaStatus(Integer id, PedidoStatus status);
 
 }

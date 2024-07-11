@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -82,6 +83,13 @@ public class PedidoServiceImpl implements PedidoService {
     @Override
     public List<Pedido> obterPedidoCompletoData(LocalDate data) {
         return repository.findByDataFetchItems(data);
+    }
+
+    public List<Pedido> findPedidosByMes(String mes) {
+        YearMonth yearMonth = YearMonth.parse(mes);
+        int year = yearMonth.getYear();
+        int month = yearMonth.getMonthValue();
+        return repository.findByMesFetchItems(month, year);
     }
 
     @Override

@@ -11,7 +11,8 @@ id integer primary key auto_increment,
 nome varchar(100),
 descricao varchar(600),
 preco numeric (20,2),
-estoque integer
+estoque integer,
+ativo tinyint
 );
 
 create table pedido(
