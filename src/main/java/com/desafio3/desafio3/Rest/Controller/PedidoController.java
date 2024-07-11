@@ -4,6 +4,8 @@ import com.desafio3.desafio3.Domain.Entity.ItemPedido;
 import com.desafio3.desafio3.Domain.Entity.Pedido;
 import com.desafio3.desafio3.Domain.Entity.Produto;
 import com.desafio3.desafio3.Domain.Enums.PedidoStatus;
+import com.desafio3.desafio3.Exception.DataErradaException;
+import com.desafio3.desafio3.Exception.RegraDeNegocioException;
 import com.desafio3.desafio3.Rest.Dto.AtualizaçãoStatusPedidoDto;
 import com.desafio3.desafio3.Rest.Dto.InfosItemPedidoDto;
 import com.desafio3.desafio3.Rest.Dto.InfosPedidoDto;
@@ -92,7 +94,7 @@ public class PedidoController {
                 .stream().map(pedido -> converter(pedido)).toList();
     }
 
-    @GetMapping("/relatorio/vendas/{mes}")
+    @GetMapping("/relatorio/mes/{mes}")
     public ResponseEntity<List<InfosPedidoDto>> getVendasPorMes(@PathVariable String mes) {
         List<Pedido> pedidos = service.findPedidosByMes(mes);
         List<InfosPedidoDto> pedidosDto = pedidos.stream()
@@ -100,4 +102,14 @@ public class PedidoController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(pedidosDto);
     }
+
+    @GetMapping("/relatorio/semana/{data}")
+    public ResponseEntity<List<InfosPedidoDto>> getVendasPorSemana(@PathVariable("data") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data) {
+        List<Pedido> pedidos = service.findPedidosBySemana(data);
+        List<InfosPedidoDto> pedidosDto = pedidos.stream()
+                .map(this::converter)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(pedidosDto);
+        }
+
 }

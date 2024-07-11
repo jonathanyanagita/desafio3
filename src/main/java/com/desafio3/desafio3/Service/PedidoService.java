@@ -25,4 +25,5 @@ public interface PedidoService {
 
     void atualizaStatus(Integer id, PedidoStatus status);
 
+    List<Pedido> findPedidosBySemana(LocalDate data);
 }

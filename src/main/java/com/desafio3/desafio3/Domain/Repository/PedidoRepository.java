@@ -25,4 +25,7 @@ public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
 
     @Query("SELECT p FROM Pedido p WHERE MONTH(p.data) = :month AND YEAR(p.data) = :year")
     List<Pedido> findByMesFetchItems(@Param("month") int month, @Param("year") int year);
+
+    @Query("SELECT p FROM Pedido p WHERE p.data BETWEEN :startDate AND :endDate")
+    List<Pedido> findByDateRange(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 }
