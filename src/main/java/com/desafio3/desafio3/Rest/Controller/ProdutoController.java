@@ -2,11 +2,13 @@ package com.desafio3.desafio3.Rest.Controller;
 
 import com.desafio3.desafio3.Domain.Entity.Produto;
 import com.desafio3.desafio3.Domain.Repository.ProdutoRepository;
+import com.desafio3.desafio3.Exception.RegraDeNegocioException;
 import jakarta.validation.Valid;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -63,5 +65,21 @@ public class ProdutoController {
         ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreCase().withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
         Example example = Example.of(filtro,matcher);
         return repository.findAll(example);
+    }
+
+    @PutMapping("/desativar/{id}")
+    public ResponseEntity<Produto> desativarProduto(@PathVariable Integer id){
+        Produto produto = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Produto não enconstrado!"));
+        produto.setAtivo(false);
+        repository.save(produto);
+        return ResponseEntity.ok().body(produto);
+    }
+
+    @PutMapping("/ativar/{id}")
+    public ResponseEntity<Produto> ativarProduto(@PathVariable Integer id){
+        Produto produto = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Produto não enconstrado!"));
+        produto.setAtivo(true);
+        repository.save(produto);
+        return ResponseEntity.ok().body(produto);
     }
 }

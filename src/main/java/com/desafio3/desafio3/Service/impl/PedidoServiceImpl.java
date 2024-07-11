@@ -44,12 +44,21 @@ public class PedidoServiceImpl implements PedidoService {
                 .orElseThrow(()-> new RegraDeNegocioException("Código do usário inválido!"));
 
         Pedido pedido = new Pedido();
+
         pedido.setData(LocalDateTime.now());
 
         BigDecimal totalPedido = BigDecimal.ZERO;
 
         List<ItemPedido> itemsPedido = converterItems(pedido, dto.getItems());
+        //testar se produto está habilitado
+        for (ItemPedido item : itemsPedido) {
+            boolean ativo = item.getProduto().getAtivo();
+            if(ativo == false){
+                throw new RegraDeNegocioException("O pedido possui um item desabilitado");
+            }
+        }
 
+        //calcular o total baseado nos itens do pedido
         for (ItemPedido item : itemsPedido) {
             BigDecimal subtotalItem = item.getProduto().getPreco().multiply(BigDecimal.valueOf(item.getQuantidade()));
             totalPedido = totalPedido.add(subtotalItem);
@@ -92,13 +101,13 @@ public class PedidoServiceImpl implements PedidoService {
 
         return items.stream().map( dto -> {
             Integer idProduto = dto.getProduto();
-            Produto produto = produtoRepository
-                    .findById(idProduto)
+            Produto produto = produtoRepository.findById(idProduto)
                     .orElseThrow(()-> new RegraDeNegocioException("Código de produto inválido: " + idProduto));
 
+            //verificar se quantidade do produto em estoque é suficiente
             if (dto.getQuantidade() > produto.getEstoque()) {
                 throw new RegraDeNegocioException("Quantidade solicitada para o produto " + idProduto + " é maior do que a quantidade disponível em estoque.");
-            }
+            } produto.setEstoque(produto.getEstoque() - dto.getQuantidade());
 
             ItemPedido itempedido = new ItemPedido();
             itempedido.setQuantidade(dto.getQuantidade());

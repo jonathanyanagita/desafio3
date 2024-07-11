@@ -91,4 +91,5 @@ public class PedidoController {
         return service.obterPedidoCompletoData(data)
                 .stream().map(pedido -> converter(pedido)).toList();
     }
+
 }

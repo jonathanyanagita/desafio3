@@ -28,8 +28,13 @@ public class Produto {
 
     private Integer estoque;
 
+    private Boolean ativo = true;
+
     public Produto(Integer id, String nome) {
         this.id = id;
         this.nome = nome;
     }
+
+
+
 }

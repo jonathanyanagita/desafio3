@@ -16,5 +16,6 @@ public class InfosItemPedidoDto {
     private String nomeProduto;
     private BigDecimal precoUnitario;
     private Integer quantidade;
+    private Boolean ativo;
 
 }
