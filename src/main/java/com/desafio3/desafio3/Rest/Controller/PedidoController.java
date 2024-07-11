@@ -2,10 +2,7 @@ package com.desafio3.desafio3.Rest.Controller;
 
 import com.desafio3.desafio3.Domain.Entity.ItemPedido;
 import com.desafio3.desafio3.Domain.Entity.Pedido;
-import com.desafio3.desafio3.Domain.Entity.Produto;
 import com.desafio3.desafio3.Domain.Enums.PedidoStatus;
-import com.desafio3.desafio3.Exception.DataErradaException;
-import com.desafio3.desafio3.Exception.RegraDeNegocioException;
 import com.desafio3.desafio3.Rest.Dto.AtualizaçãoStatusPedidoDto;
 import com.desafio3.desafio3.Rest.Dto.InfosItemPedidoDto;
 import com.desafio3.desafio3.Rest.Dto.InfosPedidoDto;
@@ -13,8 +10,6 @@ import com.desafio3.desafio3.Rest.Dto.PedidoDto;
 import com.desafio3.desafio3.Service.PedidoService;
 import jakarta.validation.Valid;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -111,5 +104,4 @@ public class PedidoController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(pedidosDto);
         }
-
 }

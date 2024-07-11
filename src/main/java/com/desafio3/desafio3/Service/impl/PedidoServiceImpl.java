@@ -50,11 +50,12 @@ public class PedidoServiceImpl implements PedidoService {
         BigDecimal totalPedido = BigDecimal.ZERO;
 
         List<ItemPedido> itemsPedido = converterItems(pedido, dto.getItems());
-        //testar se produto está habilitado
+        //testar se produto algum produto esta desabilitado
         for (ItemPedido item : itemsPedido) {
             boolean ativo = item.getProduto().getAtivo();
             if(ativo == false){
-                throw new RegraDeNegocioException("O pedido possui um item desabilitado");
+                String mensagem = String.format("O produto número '%d' está desabilitado, portanto não é possivel efeturar o pedido com o mesmo.", item.getProduto().getId());
+                throw new RegraDeNegocioException(mensagem);
             }
         }
 
