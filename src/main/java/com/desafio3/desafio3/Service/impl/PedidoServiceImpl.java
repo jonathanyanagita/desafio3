@@ -39,14 +39,10 @@ public class PedidoServiceImpl implements PedidoService {
     @Transactional
     public Pedido salvar(PedidoDto dto) {
         Integer idUsuario = dto.getUsuario();
-        Usuario usuario = usuarioRepository
-                .findById(idUsuario)
-                .orElseThrow(()-> new RegraDeNegocioException("Código do usário inválido!"));
+        Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(()-> new RegraDeNegocioException("Código do usário inválido!"));
 
         Pedido pedido = new Pedido();
-
         pedido.setData(LocalDateTime.now());
-
         BigDecimal totalPedido = BigDecimal.ZERO;
 
         List<ItemPedido> itemsPedido = converterItems(pedido, dto.getItems());
@@ -68,7 +64,6 @@ public class PedidoServiceImpl implements PedidoService {
         pedido.setTotal(totalPedido);
         pedido.setUsuario(usuario);
         pedido.setStatus(PedidoStatus.REALIZADO);
-
         repository.save(pedido);
         itemPedidoRepository.saveAll(itemsPedido);
         pedido.setItens(itemsPedido);
@@ -95,8 +90,7 @@ public class PedidoServiceImpl implements PedidoService {
     @Override
     @Transactional
     public void atualizaStatus(Integer id, PedidoStatus status) {
-        repository.findById(id).map( pedido -> {
-            pedido.setStatus(status);
+        repository.findById(id).map(pedido -> {pedido.setStatus(status);
             return repository.save(pedido);
         }).orElseThrow(()->new PedidoNaoEncontradoException());
     }

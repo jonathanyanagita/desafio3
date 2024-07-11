@@ -38,22 +38,16 @@ public class ProdutoController {
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete( @PathVariable Integer id ){
-        repository.findById(id)
-                .map( produto -> {
-                    repository.delete(produto);
+        repository.findById(id).map( produto -> {repository.delete(produto);
                     return produto;
-                })
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "Cliente não encontrado") );
+                }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Cliente não encontrado") );
 
     }
 
     @PutMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateProduto(@PathVariable Integer id, @RequestBody @Valid Produto produto){
-         repository.findById(id).
-                 map(produtoExistente -> {
-                     produto.setId(produtoExistente.getId());
+         repository.findById(id).map(produtoExistente -> {produto.setId(produtoExistente.getId());
                      repository.save(produto);
                      return produtoExistente;
                  }).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Produto não encontrado!"));

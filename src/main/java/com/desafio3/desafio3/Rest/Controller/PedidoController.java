@@ -42,9 +42,7 @@ public class PedidoController {
 
     @GetMapping("{id}")
     public InfosPedidoDto getById(@PathVariable Integer id){
-        return service
-                .obterPedidoCompleto(id)
-                .map(pedido -> converter(pedido))
+        return service.obterPedidoCompleto(id).map(pedido -> converter(pedido))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Pedido não encontrado!"));
     }
 
@@ -67,13 +65,10 @@ public class PedidoController {
     }
 
     private List<InfosItemPedidoDto> converter(List<ItemPedido> items){
-
         if (CollectionUtils.isEmpty(items)){
             return Collections.emptyList();
         }
-
-        return items.stream().map(
-                item -> InfosItemPedidoDto.builder()
+        return items.stream().map(item -> InfosItemPedidoDto.builder()
                         .nomeProduto(item.getProduto().getNome())
                         .precoUnitario(item.getProduto().getPreco())
                         .quantidade(item.getQuantidade()).build()
@@ -83,8 +78,7 @@ public class PedidoController {
     @Cacheable("cache-filtro-data")
     @GetMapping("/data/{data}")
     public List<InfosPedidoDto> getByDate(@PathVariable("data") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data){
-        return service.obterPedidoCompletoData(data)
-                .stream().map(pedido -> converter(pedido)).toList();
+        return service.obterPedidoCompletoData(data).stream().map(pedido -> converter(pedido)).toList();
     }
 
     @GetMapping("/relatorio/mes/{mes}")
