@@ -40,7 +40,7 @@ public class ProdutoController {
     public void delete( @PathVariable Integer id ){
         repository.findById(id).map( produto -> {repository.delete(produto);
                     return produto;
-                }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Cliente não encontrado") );
+                }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Produto não encontrado") );
 
     }
 
