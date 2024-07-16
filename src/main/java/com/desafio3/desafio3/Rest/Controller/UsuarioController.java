@@ -2,47 +2,46 @@ package com.desafio3.desafio3.Rest.Controller;
 
 import com.desafio3.desafio3.Domain.Entity.Usuario;
 import com.desafio3.desafio3.Domain.Repository.UsuarioRepository;
+import com.desafio3.desafio3.Rest.Dto.AuthenticationDto;
+import com.desafio3.desafio3.Rest.Dto.CadastroDto;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/usuarios")
+@RequestMapping("/api/auth")
 public class UsuarioController {
 
-    private final UsuarioRepository repository;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
-    public UsuarioController(UsuarioRepository repository) {
-        this.repository = repository;
+    @Autowired
+    private UsuarioRepository repository;
+
+    @PostMapping("login")
+    public ResponseEntity login(@RequestBody @Valid AuthenticationDto data){
+        var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.senha());
+        var auth = this.authenticationManager.authenticate(usernamePassword);
+        return ResponseEntity.ok().build();
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Usuario createUsuario(@RequestBody @Valid Usuario usuario) {
-        return repository.save(usuario);
-    }
+    @PostMapping("cadastro")
+    public ResponseEntity cadastro(@RequestBody @Valid CadastroDto data){
+        if (this.repository.findByLogin(data.login()) != null) return ResponseEntity.badRequest().build();
 
-    @PutMapping("{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateUsuario(@PathVariable Integer id, @RequestBody @Valid Usuario usuario){
-        repository.findById(id).map(usuarioExistente -> {usuario.setId(usuarioExistente.getId());
-                    repository.save(usuario);
-                    return usuarioExistente;
-                }).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Usuario não encontrado!"));
-    }
+        String senhaCriptografada = new BCryptPasswordEncoder().encode(data.senha());
 
-    @GetMapping
-    public Usuario getUsuarioById(@PathVariable Integer id){
-        return repository.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Usuario não encontrado!"));
-    }
+        Usuario usuario = new Usuario(data.login(),senhaCriptografada,data.role());
 
-    @DeleteMapping("{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete( @PathVariable Integer id ){
-        repository.findById(id).map( usuario -> {repository.delete(usuario);
-            return usuario;
-        }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Usuario não encontrado") );
+        this.repository.save(usuario);
 
+        return ResponseEntity.ok().build();
     }
 }

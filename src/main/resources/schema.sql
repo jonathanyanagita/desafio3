@@ -3,8 +3,10 @@ use desafio3;
 
 create table usuario(
 id integer primary key auto_increment,
-nome varchar(100),
-cpf varchar(11));
+login varchar(255),
+password varchar(255),
+role varchar(10)
+);
 
 create table produto(
 id integer primary key auto_increment,

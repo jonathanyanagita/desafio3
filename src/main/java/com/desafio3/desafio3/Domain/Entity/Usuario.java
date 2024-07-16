@@ -1,31 +1,86 @@
 package com.desafio3.desafio3.Domain.Entity;
 
+import com.desafio3.desafio3.Domain.Enums.UserRoles;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.br.CPF;
+import org.springframework.boot.convert.Delimiter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Usuario {
+public class Usuario implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotEmpty(message = "O campo nome é obrigatório.")
-    private String nome;
-
-    @NotEmpty(message = "O campo cpf é obrigatório.")
-    @CPF(message = "Informe um cpf válido sem pontuação.")
-    private String cpf;
-
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Pedido> pedidos;
+
+    @NotEmpty
+    @Email(message = "Favor inserir email válido. Exemplo: nome@dominio.com.br")
+    private String login;
+
+    @NotEmpty
+    @Size(min = 6, message = "Senha deve conter no mínimo 6 caracteres.")
+    private String senha;
+
+    @Enumerated(EnumType.STRING)
+    private UserRoles role;
+
+    public Usuario(String login, String senha, UserRoles role) {
+        this.login = login;
+        this.senha = senha;
+        this.role = role;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (this.role==UserRoles.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+        else return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    @Override
+    public String getPassword() {
+        return senha;
+    }
+
+    @Override
+    public String getUsername() {
+        return login;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
