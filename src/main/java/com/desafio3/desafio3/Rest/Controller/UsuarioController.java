@@ -2,8 +2,13 @@ package com.desafio3.desafio3.Rest.Controller;
 
 import com.desafio3.desafio3.Domain.Entity.Usuario;
 import com.desafio3.desafio3.Domain.Repository.UsuarioRepository;
+import com.desafio3.desafio3.Exception.RegraDeNegocioException;
 import com.desafio3.desafio3.Rest.Dto.AuthenticationDto;
 import com.desafio3.desafio3.Rest.Dto.CadastroDto;
+import com.desafio3.desafio3.Rest.Dto.LoginResponseDto;
+import com.desafio3.desafio3.Service.AuthorizationService;
+import com.desafio3.desafio3.Service.TokenService;
+import jakarta.validation.Constraint;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,26 +26,29 @@ public class UsuarioController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
-
     @Autowired
     private UsuarioRepository repository;
+    @Autowired
+    private TokenService tokenService;
 
-    @PostMapping("login")
+    @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Valid AuthenticationDto data){
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.senha());
         var auth = this.authenticationManager.authenticate(usernamePassword);
-        return ResponseEntity.ok().build();
+
+        var token = tokenService.generateToken((Usuario) auth.getPrincipal());
+
+        return ResponseEntity.ok(new LoginResponseDto(token));
     }
 
-    @PostMapping("cadastro")
-    public ResponseEntity cadastro(@RequestBody @Valid CadastroDto data){
-        if (this.repository.findByLogin(data.login()) != null) return ResponseEntity.badRequest().build();
+    @PostMapping("/register")
+    public ResponseEntity register(@RequestBody @Valid CadastroDto data){
+        if(this.repository.findByLogin(data.login()) != null) return ResponseEntity.badRequest().build();
 
-        String senhaCriptografada = new BCryptPasswordEncoder().encode(data.senha());
+        String encryptedPassword = new BCryptPasswordEncoder().encode(data.senha());
+        Usuario newUser = new Usuario(data.login(), encryptedPassword, data.role());
 
-        Usuario usuario = new Usuario(data.login(),senhaCriptografada,data.role());
-
-        this.repository.save(usuario);
+        this.repository.save(newUser);
 
         return ResponseEntity.ok().build();
     }

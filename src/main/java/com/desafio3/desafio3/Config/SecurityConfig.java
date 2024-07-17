@@ -1,5 +1,6 @@
 package com.desafio3.desafio3.Config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -11,10 +12,14 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    @Autowired
+    SecurityFilter securityFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
@@ -23,8 +28,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize->authorize
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/cadastro").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/api/produto").hasRole("ADMIN")
-                        .anyRequest().authenticated()).build();
+                        .requestMatchers(HttpMethod.POST,"/api/produtos").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/produtos").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/produtos").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/pedidos").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/usuarios").hasRole("ADMIN")
+                        .anyRequest().authenticated()).addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class).build();
     }
 
     @Bean
