@@ -69,7 +69,7 @@ public class PedidoController {
         return items.stream().map(item -> InfosItemPedidoDto.builder()
                         .nomeProduto(item.getProduto().getNome())
                         .precoUnitario(item.getProduto().getPreco())
-                        .quantidade(item.getQuantidade()).build()
+                        .quantidade(item.getQuantidade()).ativo(item.getProduto().getAtivo()).build()
         ).collect(Collectors.toList());
     }
 

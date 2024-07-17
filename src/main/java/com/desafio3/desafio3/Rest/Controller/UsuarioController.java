@@ -41,7 +41,7 @@ public class UsuarioController {
         return ResponseEntity.ok(new LoginResponseDto(token));
     }
 
-    @PostMapping("/register")
+    @PostMapping("/cadastro")
     public ResponseEntity register(@RequestBody @Valid CadastroDto data){
         if(this.repository.findByLogin(data.login()) != null) return ResponseEntity.badRequest().build();
 
