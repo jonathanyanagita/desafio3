@@ -14,6 +14,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -41,6 +42,9 @@ public class Usuario implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private UserRoles role;
+
+    private String resetToken;
+    private LocalDateTime validadeToken;
 
     public Usuario(String login, String senha, UserRoles role) {
         this.login = login;
