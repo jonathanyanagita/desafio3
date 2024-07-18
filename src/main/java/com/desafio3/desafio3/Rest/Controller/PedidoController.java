@@ -56,6 +56,7 @@ public class PedidoController {
     private InfosPedidoDto converter(Pedido pedido){
         return InfosPedidoDto
                 .builder().id(pedido.getId())
+                .idUsuario(pedido.getUsuario().getId())
                 .dataPedido(pedido.getData())
                 .total(pedido.getTotal())
                 .status(pedido.getStatus().name())

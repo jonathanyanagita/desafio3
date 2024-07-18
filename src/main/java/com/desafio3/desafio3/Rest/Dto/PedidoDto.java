@@ -14,9 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 public class PedidoDto {
 
-    @NotNull(message = "É obrigatório informar id do usuario.")
-    private Integer usuario;
-
     private BigDecimal total;
 
     @NotEmptyList(message = "O pedido deve conter pelo menos um item.")

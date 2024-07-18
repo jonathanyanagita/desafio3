@@ -15,6 +15,9 @@ import com.desafio3.desafio3.Rest.Dto.ItemPedidoDto;
 import com.desafio3.desafio3.Rest.Dto.PedidoDto;
 import com.desafio3.desafio3.Service.PedidoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -38,8 +41,11 @@ public class PedidoServiceImpl implements PedidoService {
     @Override
     @Transactional
     public Pedido salvar(PedidoDto dto) {
-        Integer idUsuario = dto.getUsuario();
-        Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(()-> new RegraDeNegocioException("Código do usário inválido!"));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String email = userDetails.getUsername();
+
+        Usuario usuario = (Usuario) usuarioRepository.findByLogin(email);
 
         Pedido pedido = new Pedido();
         pedido.setData(LocalDateTime.now());

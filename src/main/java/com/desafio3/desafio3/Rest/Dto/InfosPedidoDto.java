@@ -16,6 +16,7 @@ import java.util.List;
 public class InfosPedidoDto {
 
     private Integer id;
+    private Integer idUsuario;
     private BigDecimal total;
     private LocalDateTime dataPedido;
     private String status;
