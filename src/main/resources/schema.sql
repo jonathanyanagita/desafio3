@@ -4,8 +4,10 @@ use desafio3;
 create table usuario(
 id integer primary key auto_increment,
 login varchar(255),
-password varchar(255),
-role varchar(10)
+senha varchar(255),
+role varchar(8),
+reset_token varchar(255),
+validade_token timestamp
 );
 
 create table produto(
