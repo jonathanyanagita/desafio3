@@ -3,6 +3,7 @@ package com.desafio3.desafio3.Rest.Controller;
 import com.desafio3.desafio3.Domain.Entity.ItemPedido;
 import com.desafio3.desafio3.Domain.Entity.Pedido;
 import com.desafio3.desafio3.Domain.Enums.PedidoStatus;
+import com.desafio3.desafio3.Exception.NaoEncontradoException;
 import com.desafio3.desafio3.Rest.Dto.AtualizaçãoStatusPedidoDto;
 import com.desafio3.desafio3.Rest.Dto.InfosItemPedidoDto;
 import com.desafio3.desafio3.Rest.Dto.InfosPedidoDto;
@@ -43,7 +44,7 @@ public class PedidoController {
     @GetMapping("{id}")
     public InfosPedidoDto getById(@PathVariable Integer id){
         return service.obterPedidoCompleto(id).map(pedido -> converter(pedido))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Pedido não encontrado!"));
+                .orElseThrow(() -> new NaoEncontradoException("Pedido não encontrado!"));
     }
 
     @PatchMapping("{id}")
@@ -72,6 +73,12 @@ public class PedidoController {
                         .precoUnitario(item.getProduto().getPreco())
                         .quantidade(item.getQuantidade()).ativo(item.getProduto().getAtivo()).build()
         ).collect(Collectors.toList());
+    }
+
+    @DeleteMapping("{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletePedido(@PathVariable Integer id){
+        service.deletePedido(id);
     }
 
     @Cacheable("cache-filtro-data")

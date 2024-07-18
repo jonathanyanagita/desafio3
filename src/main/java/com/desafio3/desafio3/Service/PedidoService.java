@@ -14,12 +14,14 @@ import com.desafio3.desafio3.Exception.RegraDeNegocioException;
 import com.desafio3.desafio3.Rest.Dto.ItemPedidoDto;
 import com.desafio3.desafio3.Rest.Dto.PedidoDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.time.*;
@@ -120,9 +122,10 @@ public class PedidoService{
         } ).collect(Collectors.toList());
     }
 
-    @PatchMapping
-    public void updateStatus(){
-
+    public void deletePedido(Integer id) {
+        Pedido pedido = repository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pedido não encontrado!"));
+        repository.delete(pedido);
     }
 
     public List<Pedido> findPedidosBySemana(LocalDate data) {
