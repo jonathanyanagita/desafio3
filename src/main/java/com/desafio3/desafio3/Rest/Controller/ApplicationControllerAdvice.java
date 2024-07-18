@@ -1,6 +1,6 @@
 package com.desafio3.desafio3.Rest.Controller;
 
-import com.desafio3.desafio3.Exception.PedidoNaoEncontradoException;
+import com.desafio3.desafio3.Exception.NaoEncontradoException;
 import com.desafio3.desafio3.Exception.RegraDeNegocioException;
 import com.desafio3.desafio3.Rest.ApiErrors;
 import org.springframework.http.HttpStatus;
@@ -22,10 +22,11 @@ public class ApplicationControllerAdvice {
         return new ApiErrors(mensagemErro);
     }
 
-    @ExceptionHandler(PedidoNaoEncontradoException.class)
+    @ExceptionHandler(NaoEncontradoException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiErrors handlePedidoNaoEncontradoException(PedidoNaoEncontradoException ex){
-        return new ApiErrors(ex.getMessage());
+    public ApiErrors handleNaoEncontradoException(NaoEncontradoException ex){
+        String mensagemErro = ex.getMessage();
+        return new ApiErrors(mensagemErro);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
