@@ -3,7 +3,9 @@ package com.desafio3.desafio3.Rest.Controller;
 import com.desafio3.desafio3.Domain.Entity.Produto;
 import com.desafio3.desafio3.Domain.Repository.ProdutoRepository;
 import com.desafio3.desafio3.Exception.RegraDeNegocioException;
+import com.desafio3.desafio3.Service.ProdutoService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -18,62 +20,50 @@ import java.util.List;
 @RequestMapping("/api/produtos")
 public class ProdutoController {
 
-    private final ProdutoRepository repository;
+    private final ProdutoService service;
 
-    public ProdutoController(ProdutoRepository repository) {
-        this.repository = repository;
+    public ProdutoController(ProdutoService service) {
+        this.service = service;
     }
 
     @GetMapping("{id}")
     public Produto getProdutoById(@PathVariable Integer id) {
-        return repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Produto não enconstrado!"));
+        return service.getProdutoById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Produto createProduto(@RequestBody @Valid Produto produto) {
-        return repository.save(produto);
+        return service.createProduto(produto);
     }
 
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete( @PathVariable Integer id ){
-        repository.findById(id).map( produto -> {repository.delete(produto);
-                    return produto;
-                }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Produto não encontrado") );
-
+    public void deleteProduto(@PathVariable Integer id) {
+        service.deleteProduto(id);
     }
 
     @PutMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateProduto(@PathVariable Integer id, @RequestBody @Valid Produto produto){
-         repository.findById(id).map(produtoExistente -> {produto.setId(produtoExistente.getId());
-                     repository.save(produto);
-                     return produtoExistente;
-                 }).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Produto não encontrado!"));
+    public void updateProduto(@PathVariable Integer id, @RequestBody @Valid Produto produto) {
+        service.updateProduto(id, produto);
     }
 
     @Cacheable("cache-busca-produto")
     @GetMapping
-    public List<Produto> find(Produto filtro){
-        ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreCase().withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
-        Example example = Example.of(filtro,matcher);
-        return repository.findAll(example);
+    public List<Produto> findProdutos(Produto filtro) {
+        return service.findProdutos(filtro);
     }
 
     @PutMapping("/desativar/{id}")
-    public ResponseEntity<Produto> desativarProduto(@PathVariable Integer id){
-        Produto produto = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Produto não enconstrado!"));
-        produto.setAtivo(false);
-        repository.save(produto);
+    public ResponseEntity<Produto> desativarProduto(@PathVariable Integer id) {
+        Produto produto = service.desativarProduto(id);
         return ResponseEntity.ok().body(produto);
     }
 
     @PutMapping("/ativar/{id}")
-    public ResponseEntity<Produto> ativarProduto(@PathVariable Integer id){
-        Produto produto = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Produto não enconstrado!"));
-        produto.setAtivo(true);
-        repository.save(produto);
+    public ResponseEntity<Produto> ativarProduto(@PathVariable Integer id) {
+        Produto produto = service.ativarProduto(id);
         return ResponseEntity.ok().body(produto);
     }
 }
