@@ -32,12 +32,8 @@ public class Usuario implements UserDetails {
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Pedido> pedidos;
 
-    @NotEmpty
-    @Email(message = "Favor inserir email válido. Exemplo: nome@dominio.com.br")
     private String login;
 
-    @NotEmpty
-    @Size(min = 6, message = "Senha deve conter no mínimo 6 caracteres.")
     private String senha;
 
     @Enumerated(EnumType.STRING)

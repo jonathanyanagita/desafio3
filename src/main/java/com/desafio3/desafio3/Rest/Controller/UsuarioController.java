@@ -11,14 +11,19 @@ import com.desafio3.desafio3.Service.TokenService;
 import jakarta.validation.Constraint;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -42,14 +47,21 @@ public class UsuarioController {
     }
 
     @PostMapping("/cadastro")
-    public ResponseEntity register(@RequestBody @Valid CadastroDto data){
-        if(this.repository.findByLogin(data.login()) != null) return ResponseEntity.badRequest().build();
+    public ResponseEntity<?> cadatro(@RequestBody @Valid CadastroDto data, BindingResult result){
+        if(result.hasErrors()){
+            List<String> errors = result.getAllErrors().stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.toList());
+            return ResponseEntity.badRequest().body(errors);
+        }
 
-        String encryptedPassword = new BCryptPasswordEncoder().encode(data.senha());
-        Usuario newUser = new Usuario(data.login(), encryptedPassword, data.role());
+        if(this.repository.findByLogin(data.getLogin()) != null) {
+            throw new RegraDeNegocioException("Usuário já cadastrado");
+        }
 
+        String encryptedPassword = new BCryptPasswordEncoder().encode(data.getSenha());
+        Usuario newUser = new Usuario(data.getLogin(), encryptedPassword, data.getRole());
         this.repository.save(newUser);
-
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("Usuário cadastrado com sucesso");
     }
 }
